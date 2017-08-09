@@ -18,10 +18,12 @@ import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
     private WifiP2pManager mManager;
+    private WifiManager manager;
     private WifiP2pManager.Channel mChannel;
     private BroadcastReceiver mReceiver;
     private IntentFilter mIntentFilter;
     private ListView mList;
+    private WifiInfo info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,7 @@ public class MainActivity extends ActionBarActivity {
         mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = (WifiP2pManager.Channel) mManager.initialize(this, getMainLooper(), null);
         mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, this, list);
+        manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
@@ -40,8 +43,7 @@ public class MainActivity extends ActionBarActivity {
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
 
-        WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        WifiInfo info = manager.getConnectionInfo();
+        info = manager.getConnectionInfo();
 
         TextView text = (TextView) findViewById(R.id.mainTextView);
         text.setText(info.getMacAddress());
